@@ -1,0 +1,15 @@
+﻿venv/
+__pycache__/
+*.pyc
+data/index.npz
+*.pt
+*.bin
+*.dll
+*.safetensors
+.hf_cache/
+.huggingface/
+.cache/
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+.idea/

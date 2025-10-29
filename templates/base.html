@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>CLIP 이미지 검색</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --border:#ddd;
+      --muted:#666;
+      --bg:#fff;
+      --shadow:0 8px 24px rgba(0,0,0,0.12);
+    }
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; }
+    .card { border:1px solid var(--border); padding:8px; border-radius:8px; background:var(--bg); }
+    .thumb { width:100%; height:160px; object-fit:cover; border-radius:6px; }
+    .muted { color:var(--muted); font-size:12px; }
+
+    form { display:flex; gap:8px; }
+    input[type=text]{ flex:1; padding:10px; font-size:16px; border:1px solid var(--border); border-radius:8px; }
+    button { padding:10px 14px; font-size:16px; border:1px solid var(--border); background:#f7f7f7; border-radius:8px; cursor:pointer; }
+    button:hover{ background:#f0f0f0; }
+
+    /* 수동 사전 목록 UI */
+    .catalog-toggle {
+      position: fixed; top: 20px; right: 20px; z-index: 40;
+      padding: 10px 12px; border:1px solid var(--border); border-radius:10px; background:#fff; cursor:pointer;
+      box-shadow: var(--shadow);
+    }
+    .catalog-panel {
+      position: fixed; top: 64px; right: 20px; z-index: 50;
+      width: min(380px, 90vw); max-height: 60vh; overflow:auto;
+      background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow: var(--shadow);
+      display:none;
+    }
+    .catalog-header { position: sticky; top:0; background:#fff; padding:12px; border-bottom:1px solid var(--border); font-weight:600; }
+    .catalog-list { list-style:none; margin:0; padding:8px 0; }
+    .catalog-item {
+      padding:10px 12px; font-size:14px; border-bottom:1px solid #eee; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .catalog-item:last-child { border-bottom:none; }
+    .catalog-help { color:var(--muted); font-size:12px; padding:0 12px 8px; }
+  </style>
+</head>
+<body>
+  <!-- 수동 사전 목록 토글 버튼 -->
+  <button type="button" class="catalog-toggle" id="catalogToggle">사전 목록 (단어 색인)</button>
+
+  <!-- 수동 사전 목록 패널 -->
+  <div class="catalog-panel" id="catalogPanel" aria-hidden="true">
+    <div class="catalog-header">이미지 사전 목록</div>
+    <div class="catalog-help">※ 아래에 단어 목록을 확인하세요. (가나다 순)</div>
+    <ul class="catalog-list" id="manualCatalog">
+      <li class="catalog-item">강 (river)</li>
+      <li class="catalog-item">강아지 (dog)</li>
+      <li class="catalog-item">고양이 (cat)</li>
+      <li class="catalog-item">노을 (sunset)</li>
+      <li class="catalog-item">달 (moon)</li>
+      <li class="catalog-item">물고기 (fish)</li>
+      <li class="catalog-item">바다 (sea)</li>
+      <li class="catalog-item">빌딩 (building)</li>
+      <li class="catalog-item">사막 (desert)</li>
+      <li class="catalog-item">산 (mountain)</li>
+      <li class="catalog-item">새 (bird)</li>
+      <li class="catalog-item">스테이크 (steak)</li>
+      <li class="catalog-item">식물 (plant)</li>
+      <li class="catalog-item">야경 (night skyline)</li>
+      <li class="catalog-item">에펠탑 (Eiffel Tower)</li>
+      <li class="catalog-item">여자 (girl)</li>
+      <li class="catalog-item">음식 (food)</li>
+      <li class="catalog-item">자동차 (car)</li>
+      <li class="catalog-item">집 (house)</li>
+      <li class="catalog-item">카페 (cafe)</li>
+      <li class="catalog-item">케이크 (cake)</li>
+      <li class="catalog-item">커피 (coffee)</li>
+      <li class="catalog-item">꽃 (flower)</li>
+      <li class="catalog-item">파스타 (pasta)</li>
+      <li class="catalog-item">피자 (pizza)</li>
+      <li class="catalog-item">햄버거 (hamburger)</li>
+      <li class="catalog-item">태양 (sun)</li>
+    </ul>
+  </div>
+
+  {% block content %}{% endblock %}
+
+  <script>
+    (function(){
+      const toggleBtn = document.getElementById('catalogToggle');
+      const panel = document.getElementById('catalogPanel');
+      function togglePanel(){
+        const shown = panel.style.display === 'block';
+        panel.style.display = shown ? 'none' : 'block';
+        panel.setAttribute('aria-hidden', shown ? 'true' : 'false');
+      }
+      toggleBtn.addEventListener('click', togglePanel);
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape' && panel.style.display === 'block') togglePanel();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>CLIP을 이용한 자연어 이미지 사전</h1>
+  <h3>2570334 이은채</h3>
+  <h5>한글/영어로 단어 검색 시 단어에 맞는 이미지를 보여드립니다.</h5>
+  <form method="post" action="/search">
+    <input type="text" name="query" placeholder="예: 달, food..." value="{{ query or '' }}" />
+    <button type="submit">검색</button>
+  </form>
+
+  {% if error %}
+    <p class="muted">{{ error }}</p>
+  {% endif %}
+
+  {% if results is not none %}
+    <h3>사전 검색 결과{% if query %}: “{{ query }}”{% endif %}</h3>
+
+    {% if results|length == 0 %}
+      <p class="muted">검색 결과가 없습니다.</p>
+      <p class="muted">영어/한글로 재검색하거나 다른 단어를 검색해주세요.</p>
+    {% else %}
+      <div class="grid">
+        {% for r in results %}
+          <div class="card">
+            <img class="thumb" src="{{ url_for('static', filename='images/' + r.file) }}" alt="{{ r.file }}" />
+            <div class="muted">{{ r.file }}<br/>score: {{ "%.4f"|format(r.score) }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+{% endblock %}
